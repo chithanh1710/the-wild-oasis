@@ -2,13 +2,37 @@ import { Metadata } from "next";
 import CabinsList from "../_components/CabinsList";
 import { Suspense } from "react";
 import ListCabinSkeleton from "../_components/ListCabinSkeleton";
+import FilterCabins from "../_components/FilterCabins";
+import FilterCabinsByPrice from "../_components/FilterCabinsByPrice";
+
+// export const revalidate = 3600; // 1 tieng
 
 export const metadata: Metadata = {
   title: "Cabins",
   description: "Cabins by The Wild Oasis",
 };
 
-export default function page() {
+export default function page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const filterCapacity = searchParams?.capacity ?? "all";
+  const filterByPrice = {
+    min: Number(searchParams?.priceMin) || 0,
+    max: Number(searchParams?.priceMax) || 10000,
+  };
+  const sortByPrice = searchParams?.sortByPrice ?? "asc";
+
+  const capacity = {
+    field: "capacity",
+    list: [
+      { name: "All cabins", value: "all" },
+      { name: "2-3 guests", value: "small" },
+      { name: "4-7 guests", value: "medium" },
+      { name: "8-12 guests", value: "large" },
+    ],
+  };
   return (
     <div>
       <h1 className="text-4xl mb-5 text-accent-400 font-medium">
@@ -23,8 +47,16 @@ export default function page() {
         Welcome to paradise.
       </p>
 
+      <div className="flex mb-8 items-center justify-between gap-4">
+        <FilterCabins data={capacity} />
+        <FilterCabinsByPrice min={0} max={2000} />
+      </div>
+
       <Suspense fallback={<ListCabinSkeleton />}>
-        <CabinsList />
+        <CabinsList
+          filterByPrice={filterByPrice}
+          filterCapacity={filterCapacity}
+        />
       </Suspense>
     </div>
   );

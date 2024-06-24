@@ -1,3 +1,4 @@
+import TextExpander from "@/app/_components/TextExpander";
 import { cabinProps } from "@/app/_interfaces/Cabin";
 import { getCabin, getCabins } from "@/app/_libs/data-service";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
@@ -43,6 +44,8 @@ export default async function page({ params }: { params: Params }) {
           <Image
             className="object-cover absolute"
             fill
+            sizes="600px"
+            priority
             src={image}
             alt={`Cabin ${name}`}
           />
@@ -53,7 +56,9 @@ export default async function page({ params }: { params: Params }) {
             Cabin {name}
           </h3>
 
-          <p className="text-lg text-primary-300 mb-10">{description}</p>
+          <p className="text-lg text-primary-300 mb-10">
+            <TextExpander description={description || ""} />
+          </p>
 
           <ul className="flex flex-col gap-4 mb-7">
             <li className="flex gap-3 items-center">

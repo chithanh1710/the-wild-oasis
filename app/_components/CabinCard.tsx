@@ -10,6 +10,7 @@ function CabinCard({ cabin }: { cabin: cabinProps }) {
     <div className="flex border-primary-800 border relative">
       <Image
         fill
+        sizes="700px"
         src={image}
         alt={`Cabin ${name}`}
         className="flex-1 border-r border-primary-800 absolute object-cover z-0"
