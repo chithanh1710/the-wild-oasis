@@ -22,7 +22,7 @@ export function ItemFilter({
       onClick={() => {
         const params = new URLSearchParams(searchParams);
         params.set(field, value);
-        router.push(`${pathname}?${params.toString()}`);
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
       }}
       className={`${
         isField ? "bg-primary-800" : ""

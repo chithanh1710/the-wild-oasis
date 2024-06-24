@@ -22,7 +22,6 @@ export default function page({
     min: Number(searchParams?.priceMin) || 0,
     max: Number(searchParams?.priceMax) || 10000,
   };
-  const sortByPrice = searchParams?.sortByPrice ?? "asc";
 
   const capacity = {
     field: "capacity",
@@ -52,7 +51,10 @@ export default function page({
         <FilterCabinsByPrice min={0} max={2000} />
       </div>
 
-      <Suspense fallback={<ListCabinSkeleton />}>
+      <Suspense
+        key={filterCapacity + filterByPrice.min + filterByPrice.max}
+        fallback={<ListCabinSkeleton />}
+      >
         <CabinsList
           filterByPrice={filterByPrice}
           filterCapacity={filterCapacity}

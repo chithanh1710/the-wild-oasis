@@ -8,8 +8,6 @@ export default function ListCabinSkeleton() {
       <CabinSkeleton />
       <CabinSkeleton />
       <CabinSkeleton />
-      <CabinSkeleton />
-      <CabinSkeleton />
     </div>
   );
 }

@@ -39,35 +39,29 @@ const MultiRangeSlider = ({ min, max }: { min: number; max: number }) => {
     const value = Math.min(Number(e.target.value), maxVal - 1);
     setMinVal(value);
     minValRef.current = value;
-
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      const params = new URLSearchParams(searchParams);
-      params.set("priceMin", value.toString());
-      router.push(`${pathName}?${params}`);
-    }, 500);
   };
 
   const handleMaxValChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = Math.max(Number(e.target.value), minVal + 1);
     setMaxVal(value);
     maxValRef.current = value;
-
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      const params = new URLSearchParams(searchParams);
-      params.set("priceMax", value.toString());
-      router.push(`${pathName}?${params}`);
-    }, 500);
   };
 
-  // Convert to percentage
+  useEffect(() => {
+    debounceTimeoutRef.current = setTimeout(() => {
+      const params = new URLSearchParams(searchParams);
+      params.set("priceMin", minVal.toString());
+      params.set("priceMax", maxVal.toString());
+      router.replace(`${pathName}?${params}`, { scroll: false });
+    }, 500);
+
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+    };
+  }, [maxVal, minVal, pathName, router, searchParams]);
+
   const getPercent = useCallback(
     (value: number) => {
       return Math.round(((value - min) / (max - min)) * 100);
@@ -75,7 +69,6 @@ const MultiRangeSlider = ({ min, max }: { min: number; max: number }) => {
     [min, max]
   );
 
-  // Set width of the range to decrease from the left side
   useEffect(() => {
     const minPercent = getPercent(minVal);
     const maxPercent = getPercent(maxValRef.current);
