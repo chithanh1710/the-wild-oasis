@@ -1,5 +1,12 @@
 "use client";
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "@/app/_styles/multiRangeSlider.css";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -7,19 +14,26 @@ const MultiRangeSlider = ({ min, max }: { min: number; max: number }) => {
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
-  const [minVal, setMinVal] = useState(min);
-  const [maxVal, setMaxVal] = useState(max);
-  const minValRef = useRef(min);
-  const maxValRef = useRef(max);
+  const priceMin = useMemo(
+    () =>
+      (Number(searchParams.get("priceMin")) >= min &&
+        Number(searchParams.get("priceMin"))) ||
+      min,
+    [min, searchParams]
+  );
+  const priceMax = useMemo(
+    () =>
+      (Number(searchParams.get("priceMax")) <= max &&
+        Number(searchParams.get("priceMax"))) ||
+      max,
+    [max, searchParams]
+  );
+  const [minVal, setMinVal] = useState(priceMin);
+  const [maxVal, setMaxVal] = useState(priceMax);
+  const minValRef = useRef(priceMin);
+  const maxValRef = useRef(priceMax);
   const range = useRef<HTMLDivElement>(null);
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    params.set("priceMin", min.toString());
-    params.set("priceMax", max.toString());
-    router.push(`${pathName}?${params}`);
-  }, []);
 
   const handleMinValChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = Math.min(Number(e.target.value), maxVal - 1);
@@ -34,7 +48,7 @@ const MultiRangeSlider = ({ min, max }: { min: number; max: number }) => {
       const params = new URLSearchParams(searchParams);
       params.set("priceMin", value.toString());
       router.push(`${pathName}?${params}`);
-    }, 500); // 0.5 seconds
+    }, 500);
   };
 
   const handleMaxValChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -42,17 +56,15 @@ const MultiRangeSlider = ({ min, max }: { min: number; max: number }) => {
     setMaxVal(value);
     maxValRef.current = value;
 
-    // Clear the previous timeout
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
 
-    // Set a new timeout
     debounceTimeoutRef.current = setTimeout(() => {
       const params = new URLSearchParams(searchParams);
       params.set("priceMax", value.toString());
       router.push(`${pathName}?${params}`);
-    }, 500); // 0.5 seconds
+    }, 500);
   };
 
   // Convert to percentage
@@ -85,7 +97,7 @@ const MultiRangeSlider = ({ min, max }: { min: number; max: number }) => {
   }, [maxVal, getPercent]);
 
   return (
-    <div className="">
+    <div>
       <input
         type="range"
         min={min}

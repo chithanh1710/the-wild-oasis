@@ -11,23 +11,24 @@ export default async function CabinsList({
 }) {
   const cabins: cabinProps[] = await getCabins();
   let dataTemp;
-  if (filterCapacity === "small") {
-    dataTemp = cabins.filter((item) => item.maxCapacity <= 3);
-  } else if (filterCapacity === "medium") {
-    dataTemp = cabins.filter(
-      (item) => item.maxCapacity >= 4 && item.maxCapacity <= 7
-    );
-  } else if (filterCapacity === "large") {
-    dataTemp = cabins.filter((item) => item.maxCapacity >= 8);
-  } else {
-    dataTemp = cabins;
-  }
 
-  dataTemp = dataTemp.filter(
+  dataTemp = cabins.filter(
     (item) =>
       item.regularPrice >= filterByPrice.min &&
       item.regularPrice <= filterByPrice.max
   );
+
+  if (filterCapacity === "small") {
+    dataTemp = dataTemp.filter((item) => item.maxCapacity <= 3);
+  } else if (filterCapacity === "medium") {
+    dataTemp = dataTemp.filter(
+      (item) => item.maxCapacity >= 4 && item.maxCapacity <= 7
+    );
+  } else if (filterCapacity === "large") {
+    dataTemp = dataTemp.filter((item) => item.maxCapacity >= 8);
+  } else {
+    dataTemp = dataTemp;
+  }
 
   return (
     dataTemp.length > 0 && (
