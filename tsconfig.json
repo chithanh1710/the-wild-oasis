@@ -29,5 +29,6 @@
     "app/login/page.tsx",
     "app/_components/SignOutButton.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "types": ["next-auth", "./types.d.ts"]
 }
