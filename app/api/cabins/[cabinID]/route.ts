@@ -8,7 +8,6 @@ export async function GET(request: Request, { params }: { params: Params }) {
       getCabin(cabinID),
       getBookedDatesByCabinId(cabinID),
     ]);
-    console.log(cabin, bookedDate);
     return Response.json({
       status: "success",
       message: "All data cabin and booked date",
