@@ -43,7 +43,7 @@ export const getCabins = async function () {
     .select("id, name, maxCapacity, regularPrice, discount, image")
     .order("name");
 
-  await new Promise((res) => setTimeout(res, 2000));
+  // await new Promise((res) => setTimeout(res, 2000));
 
   if (error) {
     console.error(error);
@@ -87,7 +87,7 @@ export async function getBookings(guestId) {
     .select(
       "id, created_at, startDate, endDate, numNights, numGuests, totalPrice, guestId, cabinId, cabins(name, image)"
     )
-    .eq("guestId", guestId)
+    .eq("guestID", guestId)
     .order("startDate");
 
   if (error) {
@@ -98,7 +98,7 @@ export async function getBookings(guestId) {
   return data;
 }
 
-export async function getBookedDatesByCabinId(cabinId) {
+export async function getBookedDatesByCabinId(cabinID) {
   let today = new Date();
   today.setUTCHours(0, 0, 0, 0);
   today = today.toISOString();
@@ -107,9 +107,8 @@ export async function getBookedDatesByCabinId(cabinId) {
   const { data, error } = await supabase
     .from("bookings")
     .select("*")
-    .eq("cabinId", cabinId)
+    .eq("cabinID", cabinID)
     .or(`startDate.gte.${today},status.eq.checked-in`);
-
   if (error) {
     console.error(error);
     throw new Error("Bookings could not get loaded");
@@ -155,7 +154,17 @@ export async function getCountries() {
 // CREATE
 
 export async function createGuest(newGuest) {
-  const { data, error } = await supabase.from("guests").insert([newGuest]);
+  const { count, error: errorAll } = await supabase
+    .from("guests")
+    .select("*", { count: "exact" });
+
+  if (errorAll) {
+    throw new Error("Guest could not be created");
+  }
+
+  const { data, error } = await supabase
+    .from("guests")
+    .insert([{ ...newGuest, id: count + 1 }]);
 
   if (error) {
     console.error(error);
@@ -169,7 +178,6 @@ export async function createBooking(newBooking) {
   const { data, error } = await supabase
     .from("bookings")
     .insert([newBooking])
-    // So that the newly created object gets returned!
     .select()
     .single();
 

@@ -3,7 +3,7 @@ import CabinsList from "../_components/CabinsList";
 import { Suspense } from "react";
 import ListCabinSkeleton from "../_components/ListCabinSkeleton";
 import FilterCabins from "../_components/FilterCabins";
-import FilterCabinsByPrice from "../_components/FilterCabinsByPrice";
+import FilterCabinsByPrice from "../_components/MultiRangeSlider";
 
 // export const revalidate = 3600; // 1 tieng
 
@@ -51,10 +51,7 @@ export default function page({
         <FilterCabinsByPrice min={0} max={2000} />
       </div>
 
-      <Suspense
-        key={filterCapacity + filterByPrice.min + filterByPrice.max}
-        fallback={<ListCabinSkeleton />}
-      >
+      <Suspense key={filterCapacity} fallback={<ListCabinSkeleton />}>
         <CabinsList
           filterByPrice={filterByPrice}
           filterCapacity={filterCapacity}
