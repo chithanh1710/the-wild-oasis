@@ -15,7 +15,7 @@ export function Button({ text }: { text: string }) {
   }, [pending]);
 
   useEffect(() => {
-    if (count >= 3) {
+    if (count >= 2) {
       toast.success("Update success");
     }
   }, [count]);
