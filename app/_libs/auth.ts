@@ -14,11 +14,8 @@ const authConfig: NextAuthConfig = {
       return !!auth?.user;
     },
     async signIn({ user }) {
-      console.log("User during signIn:", user);
-
       if (user.email) {
         const existingGuest = await getGuest(user.email);
-        console.log("Existing guest:", existingGuest);
 
         if (!existingGuest) {
           await createGuest({
@@ -32,10 +29,8 @@ const authConfig: NextAuthConfig = {
       return true;
     },
     async session({ session }) {
-      console.log("Session during callback:", session);
       if (session.user?.email) {
         const guest = await getGuest(session.user.email);
-        console.log("Guest found:", guest);
 
         if (guest) {
           session.user.guestId = guest.id;
