@@ -3,7 +3,6 @@
 import { auth } from "@/app/_libs/auth";
 import { getBookings, updateBooking } from "@/app/_libs/data-service";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export async function updateBookingAction(formData: FormData) {
   const id = formData.get("id");
@@ -25,5 +24,4 @@ export async function updateBookingAction(formData: FormData) {
 
   revalidatePath("/account/reservations", "page");
   revalidatePath(`/account/reservations/edit/${id}`);
-  redirect("/account/reservations");
 }

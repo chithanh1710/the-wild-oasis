@@ -1,10 +1,9 @@
 "use client";
 import SpinnerMini from "@/app/_components/SpinnerMini";
-import { useFormStatus } from "react-dom";
+import { useFirstMount } from "@/app/_hook/useFirstMount";
 
 export function ButtonPageEdit() {
-  const { pending } = useFormStatus();
-
+  const { pending } = useFirstMount("Edit success", "/account/reservations");
   return (
     <button
       disabled={pending}

@@ -1,25 +1,9 @@
 "use client";
-import { useFormStatus } from "react-dom";
 import SpinnerMini from "./SpinnerMini";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useFirstMount } from "../_hook/useFirstMount";
 
 export function Button({ text }: { text: string }) {
-  const [count, setCount] = useState(0);
-  const { pending } = useFormStatus();
-
-  useEffect(() => {
-    if (!pending) {
-      setCount((i) => i + 1);
-    }
-  }, [pending]);
-
-  useEffect(() => {
-    if (count >= 2) {
-      toast.success("Update success");
-    }
-  }, [count]);
-
+  const { pending } = useFirstMount("Update success");
   return (
     <button
       disabled={pending}
