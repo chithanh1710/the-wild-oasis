@@ -1,14 +1,17 @@
-import ReservationCard from "@/app/_components/ReservationCard";
+import { auth } from "@/app/_libs/auth";
+import { getBookings } from "@/app/_libs/data-service";
 import { Metadata } from "next";
+import { ListBooking } from "../../_components/ListBooking";
 
 export const metadata: Metadata = {
   title: "Reservations",
   description: "Reservations by The Wild Oasis",
 };
 
-export default function Page() {
-  // CHANGE
-  const bookings: any = [];
+export default async function Page() {
+  const session = await auth();
+  const bookings = await getBookings(session?.user.guestId);
+
   return (
     <div>
       <h2 className="font-semibold text-2xl text-accent-400 mb-7">
@@ -23,11 +26,7 @@ export default function Page() {
           </a>
         </p>
       ) : (
-        <ul className="space-y-6">
-          {bookings.map((booking: any) => (
-            <ReservationCard booking={booking} key={booking.id} />
-          ))}
-        </ul>
+        <ListBooking bookings={bookings} />
       )}
     </div>
   );

@@ -1,5 +1,7 @@
 import SelectCountry from "@/app/_components/SelectCountry";
 import UpdateForm from "@/app/_components/UpdateForm";
+import { auth } from "@/app/_libs/auth";
+import { getGuest } from "@/app/_libs/data-service";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,8 +9,9 @@ export const metadata: Metadata = {
   description: "Update profile by The Wild Oasis",
 };
 
-export default function page() {
-  const nationality = "vietnam";
+export default async function page() {
+  const session = await auth();
+  const guest = await getGuest(session?.user.email);
   return (
     <div>
       <h2 className="font-semibold text-2xl text-accent-400 mb-4">
@@ -19,12 +22,12 @@ export default function page() {
         Providing the following information will make your check-in process
         faster and smoother. See you soon!
       </p>
-      <UpdateForm>
+      <UpdateForm guest={guest}>
         <SelectCountry
           name="nationality"
           id="nationality"
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
-          defaultCountry={nationality}
+          defaultCountry={guest.nationality}
         />
       </UpdateForm>
     </div>

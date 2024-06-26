@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "About by The Wild Oasis",
 };
 
-export const revalidate = 60 * 60 * 24;
+// export const revalidate = 60 * 60 * 24;
 
 export default async function page() {
   const length = await (await getCabins()).length;

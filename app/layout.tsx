@@ -4,6 +4,7 @@ import "@/app/_styles/globals.css";
 import Header from "./_components/Header";
 import Footer from "./_components/Footer";
 import { ReservationProvider } from "./context/ReservationContext";
+import { Toaster } from "react-hot-toast";
 
 const josefin = Josefin_Sans({
   subsets: ["latin", "vietnamese"],
@@ -35,6 +36,7 @@ export default function RootLayout({
             <ReservationProvider>{children}</ReservationProvider>
           </main>
         </div>
+        <Toaster position="bottom-right" />
         <Footer />
       </body>
     </html>

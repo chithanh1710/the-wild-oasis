@@ -1,13 +1,34 @@
-"use client";
 import Image from "next/image";
 import { ReactNode } from "react";
+import { updateProfile } from "../account/profile/actions";
+import { Button } from "./Button";
 
-export default function UpdateForm({ children }: { children: ReactNode }) {
+export default function UpdateForm({
+  children,
+  guest,
+}: {
+  children: ReactNode;
+  guest: {
+    nationalID: string | null | undefined;
+    nationality: string | null | undefined;
+    countryFlag: string | null | undefined;
+    fullName: string | null | undefined;
+    email: string | null | undefined;
+    id: number;
+  };
+}) {
+  const { email, fullName, countryFlag, nationalID, nationality, id } = guest;
   return (
-    <form className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col">
+    <form
+      action={updateProfile}
+      className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
+    >
+      <input readOnly type="hidden" name="id" value={id} className="hidden" />
       <div className="space-y-2">
         <label>Full name</label>
         <input
+          name="fullName"
+          value={fullName || ""}
           disabled
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
@@ -16,6 +37,8 @@ export default function UpdateForm({ children }: { children: ReactNode }) {
       <div className="space-y-2">
         <label>Email address</label>
         <input
+          name="email"
+          value={email || ""}
           disabled
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
         />
@@ -24,28 +47,30 @@ export default function UpdateForm({ children }: { children: ReactNode }) {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <label htmlFor="nationality">Where are you from?</label>
-          <Image
-            width={100}
-            height={100}
-            src="https://flagcdn.com/va.svg"
-            alt="Country flag"
-            className="h-6 w-6 rounded-sm"
-          />
+          <div className="flex gap-2">
+            <span>{nationality}</span>
+            <Image
+              width={100}
+              height={100}
+              src={countryFlag || "https://flagcdn.com/vn.svg"}
+              alt="Country flag"
+              className="h-6 w-6 rounded-sm"
+            />
+          </div>
         </div>
       </div>
       {children}
       <div className="space-y-2">
         <label htmlFor="nationalID">National ID number</label>
         <input
+          defaultValue={nationalID || ""}
           name="nationalID"
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
         />
       </div>
 
       <div className="flex justify-end items-center gap-6">
-        <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-          Update profile
-        </button>
+        <Button text="Update profile" />
       </div>
     </form>
   );
