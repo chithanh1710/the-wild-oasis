@@ -14,20 +14,37 @@ const authConfig: NextAuthConfig = {
       return !!auth?.user;
     },
     async signIn({ user }) {
-      const existingGuest = await getGuest(user.email);
+      console.log("User during signIn:", user);
 
-      if (!existingGuest)
-        await createGuest({
-          created_at: new Date(),
-          fullName: user.name,
-          email: user.email,
-        });
+      if (user.email) {
+        const existingGuest = await getGuest(user.email);
+        console.log("Existing guest:", existingGuest);
+
+        if (!existingGuest) {
+          await createGuest({
+            created_at: new Date(),
+            fullName: user.name,
+            email: user.email,
+          });
+        }
+      }
 
       return true;
     },
     async session({ session }) {
-      const guest = await getGuest(session.user.email);
-      session.user.guestId = guest.id;
+      console.log("Session during callback:", session);
+      if (session.user?.email) {
+        const guest = await getGuest(session.user.email);
+        console.log("Guest found:", guest);
+
+        if (guest) {
+          session.user.guestId = guest.id;
+        } else {
+          session.user.guestId = null;
+        }
+      } else {
+        session.user.guestId = null;
+      }
       return session;
     },
   },
