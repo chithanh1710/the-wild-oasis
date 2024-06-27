@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supabase";
-import { getBookings } from "./data-service";
+import { createBooking, getBookings } from "./data-service";
+import { differenceInBusinessDays } from "date-fns";
+import { cabinProps } from "../_interfaces/Cabin";
+import { redirect } from "next/navigation";
 
 export async function signInAction() {
   await signIn("google", { redirectTo: "/account" });
@@ -33,5 +36,39 @@ export async function deleteReservationAction(id: string) {
     throw error;
   } finally {
     revalidatePath("/account/reservations", "page");
+  }
+}
+
+export async function createReservationAction(
+  formData: FormData,
+  newData: { form: Date; to: Date; cabin: cabinProps }
+) {
+  const session = await auth();
+  if (!session?.user || !session.user.guestId)
+    throw new Error("You need logged");
+  const maxNights = differenceInBusinessDays(newData.to, newData.form);
+  const newBooking = {
+    numGuests: Number(formData.get("numGuests")),
+    observations: formData.get("observations")?.toString(),
+    startDate: newData.form,
+    endDate: newData.to,
+    maxNights,
+    cabinPrice: newData.cabin.regularPrice,
+    totalPrice:
+      (newData.cabin.regularPrice - newData.cabin.discount) * maxNights,
+    status: "pending",
+    hasBreakfast: false,
+    isPaid: false,
+    cabinID: newData.cabin.id,
+    guestID: session.user.guestId,
+  };
+
+  try {
+    await createBooking(newBooking);
+  } catch (error) {
+    throw error;
+  } finally {
+    revalidatePath("/account/reservations");
+    redirect("/account/reservations");
   }
 }

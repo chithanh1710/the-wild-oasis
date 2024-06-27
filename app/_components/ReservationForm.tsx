@@ -4,6 +4,8 @@ import { cabinProps } from "../_interfaces/Cabin";
 import { useContextReservation } from "../context/ReservationContext";
 import Image from "next/image";
 import Link from "next/link";
+import { createReservationAction } from "../_libs/actions";
+import toast from "react-hot-toast";
 
 function ReservationForm({
   cabin,
@@ -52,7 +54,20 @@ function ReservationForm({
           {range.from?.toDateString()} to {range.to?.toDateString()}
         </p>
       )}
-      <form className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col">
+      <form
+        action={(formData) => {
+          if (range.from && range.to)
+            createReservationAction(formData, {
+              form: range.from,
+              to: range.to,
+              cabin,
+            });
+          else {
+            toast.error(" You must select a start date and an end date");
+          }
+        }}
+        className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col"
+      >
         <div className="space-y-2">
           <label htmlFor="numGuests">How many guests?</label>
           <select

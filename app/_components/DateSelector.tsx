@@ -1,24 +1,13 @@
 "use client";
-import { differenceInBusinessDays, isDate, isWithinInterval } from "date-fns";
+import { differenceInBusinessDays, isDate, isPast, isSameDay } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import settingsProps from "../_interfaces/settings";
 import { cabinProps } from "../_interfaces/Cabin";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useContextReservation } from "../context/ReservationContext";
-
-function isAlreadyBooked(
-  range: { from: number; to: number },
-  datesArr: Date[]
-) {
-  return (
-    range.from &&
-    range.to &&
-    datesArr.some((date: Date) =>
-      isWithinInterval(date, { start: range.from, end: range.to })
-    )
-  );
-}
+import toast from "react-hot-toast";
+import { isAlreadyBooked } from "../_utils/isAlreadyBooked";
 
 function DateSelector({
   settings,
@@ -35,20 +24,7 @@ function DateSelector({
   const [cabinPrice, setCabinPrice] = useState(0);
   const [isSelect, setIsSelect] = useState(false);
 
-  useEffect(() => {
-    if (isDate(range.from) && isDate(range.to)) {
-      const newRange = differenceInBusinessDays(range.to, range.from);
-      setNumNights(newRange);
-      setCabinPrice(newRange * regularPrice);
-      setIsSelect(true);
-    }
-  }, [range, regularPrice]);
-
-  // SETTINGS
-  const minBookingLength = settings.minBookingLength;
-  const maxBookingLength = settings.maxBookingLength;
-
-  function resetRange() {
+  const resetRange = useCallback(() => {
     setNumNights(0);
     setCabinPrice(0);
     setRange({
@@ -56,7 +32,23 @@ function DateSelector({
       to: undefined,
     });
     setIsSelect(false);
-  }
+  }, [setRange]);
+
+  useEffect(() => {
+    if (isDate(range.from) && isDate(range.to)) {
+      if (isAlreadyBooked({ from: range.from, to: range.to }, bookedDates)) {
+        return resetRange();
+      }
+      const newRange = differenceInBusinessDays(range.to, range.from);
+      setNumNights(newRange);
+      setCabinPrice(newRange * (regularPrice - discount));
+      setIsSelect(true);
+    }
+  }, [range, regularPrice, bookedDates, resetRange, discount]);
+
+  // SETTINGS
+  const minBookingLength = settings.minBookingLength;
+  const maxBookingLength = settings.maxBookingLength;
 
   return (
     <div className="flex flex-col justify-between">
@@ -65,7 +57,13 @@ function DateSelector({
         mode="range"
         onSelect={(range) => {
           if (!isSelect) {
-            setRange({ from: range?.from, to: range?.to });
+            setRange(
+              isDate(range?.from) &&
+                isDate(range?.to) &&
+                isAlreadyBooked({ from: range.from, to: range.to }, bookedDates)
+                ? { from: undefined, to: undefined }
+                : { from: range?.from, to: range?.to }
+            );
           }
         }}
         selected={range}
@@ -76,6 +74,10 @@ function DateSelector({
         toYear={new Date().getFullYear() + 5}
         captionLayout="dropdown"
         numberOfMonths={2}
+        disabled={(curDate) =>
+          isPast(curDate) ||
+          bookedDates.some((date) => isSameDay(date, curDate))
+        }
       />
 
       <div className="flex items-center justify-between px-4 bg-accent-500 text-primary-800 h-[72px]">
