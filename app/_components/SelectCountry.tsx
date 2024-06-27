@@ -18,6 +18,7 @@ async function SelectCountry({
 
   return (
     <select
+      required
       name={name}
       id={id}
       defaultValue={`${defaultCountry}(%_%)${flag}`}
