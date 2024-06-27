@@ -15,19 +15,15 @@ export async function updateProfile(formData: FormData) {
     countryFlag: formData.get("nationality")?.toString().split("(%_%)")[1],
   };
 
-  try {
-    if (update.nationalID && !regex.test(update.nationalID))
-      throw new Error(
-        "National id is not in correct format. National id needs 6 - 12 numbers"
-      );
+  if (update.nationalID && !regex.test(update.nationalID))
+    throw new Error(
+      "National id is not in correct format. National id needs 6 - 12 numbers"
+    );
 
-    const { error } = await supabase.from("guests").update(update).eq("id", id);
+  const { error } = await supabase.from("guests").update(update).eq("id", id);
 
-    if (error) throw new Error("Guest could not be updated");
+  if (error) throw new Error("Guest could not be updated");
 
-    revalidatePath("/account/profile", "page");
-    revalidatePath("/account", "page");
-  } catch (error: any) {
-    throw new Error(error?.message || "");
-  }
+  revalidatePath("/account/profile", "page");
+  revalidatePath("/account", "page");
 }

@@ -25,12 +25,14 @@ export default async function page() {
       <h2 className="flex gap-4  items-center font-semibold text-xl">
         Nationality: {guest.nationality || ""}
         <span>
-          <Image
-            width={24}
-            height={24}
-            src={guest.countryFlag || ""}
-            alt={guest.nationality || ""}
-          />
+          {guest?.countryFlag && (
+            <Image
+              width={24}
+              height={24}
+              src={guest.countryFlag}
+              alt={guest.nationality || ""}
+            />
+          )}
         </span>
       </h2>
     </div>
