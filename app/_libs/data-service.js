@@ -30,15 +30,11 @@ export const getCabins = async function () {
 };
 
 export async function getGuest(email) {
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("guests")
     .select("*")
     .eq("email", email)
     .single();
-
-  if (error) {
-    throw new Error(error.message);
-  }
 
   return data;
 }

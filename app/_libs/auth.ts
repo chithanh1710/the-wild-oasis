@@ -14,20 +14,17 @@ const authConfig: NextAuthConfig = {
       return !!auth?.user;
     },
     async signIn({ user }) {
-      try {
-        const existingGuest = await getGuest(user.email);
+      const existingGuest = await getGuest(user.email);
 
-        if (!existingGuest) {
-          await createGuest({
-            created_at: new Date(),
-            fullName: user.name,
-            email: user.email,
-          });
-        }
-      } catch {
-      } finally {
-        return true;
+      if (!existingGuest) {
+        await createGuest({
+          created_at: new Date(),
+          fullName: user.name,
+          email: user.email,
+        });
       }
+
+      return true;
     },
     async session({ session }) {
       if (session.user?.email) {
