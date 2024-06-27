@@ -16,7 +16,7 @@ export async function Reservation({
     getBookedDatesByCabinId(cabin.id),
   ]);
   return (
-    <div className="grid xl:grid-cols-2 grid-cols-1 border border-primary-800 min-h-[400px] overflow-hidden">
+    <div className="grid xl:grid-cols-2 grid-cols-1 md:border md:border-primary-800 min-h-[400px] overflow-hidden">
       <DateSelector
         bookedDates={bookedDates}
         settings={settings}

@@ -12,13 +12,6 @@ export default function Logo() {
         src={logo}
         alt="The Wild Oasis"
       />
-      {/* <Image
-        quality={75}
-        width={60}
-        height={60}
-        src="/logo.png"
-        alt="The Wild Oasis"
-      /> */}
       <span className="text-xl font-medium text-primary-100">
         The Wild Oasis
       </span>

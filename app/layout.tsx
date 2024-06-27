@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Josefin_Sans } from "next/font/google";
 import "@/app/_styles/globals.css";
 import Header from "./_components/Header";
-import Footer from "./_components/Footer";
 import { ReservationProvider } from "./context/ReservationContext";
 import { Toaster } from "react-hot-toast";
 
@@ -37,7 +36,6 @@ export default function RootLayout({
           </main>
         </div>
         <Toaster position="bottom-right" />
-        <Footer />
       </body>
     </html>
   );

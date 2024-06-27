@@ -5,8 +5,8 @@ import { cabinProps } from "../_interfaces/Cabin";
 
 export default function CabinDetails({ cabin }: { cabin: cabinProps }) {
   return (
-    <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24">
-      <div className="relative scale-[1.15] -translate-x-3">
+    <div className="md:grid md:grid-cols-[3fr_4fr] flex flex-col md:gap-20 gap-6 border border-primary-800 md:py-3 md:px-10 mb-24">
+      <div className="relative md:scale-[1.15] md:-translate-x-3 md:h-full w-full h-80">
         <Image
           className="object-cover absolute"
           fill
@@ -17,12 +17,12 @@ export default function CabinDetails({ cabin }: { cabin: cabinProps }) {
         />
       </div>
 
-      <div>
-        <h3 className="text-accent-100 font-black text-7xl mb-5 translate-x-[-254px] bg-primary-950 p-6 pb-1 w-[150%]">
+      <div className="md:px-0 px-4">
+        <h3 className="text-accent-100 font-black md:text-7xl text-5xl mb-5 md:translate-x-[-254px] bg-primary-950 md:p-6 pb-1 md:w-[150%]">
           Cabin {cabin.name}
         </h3>
 
-        <p className="text-lg text-primary-300 mb-10">
+        <p className="md:text-lg text-xs text-primary-300 mb-10">
           <TextExpander description={cabin.description || ""} />
         </p>
 

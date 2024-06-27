@@ -5,8 +5,6 @@ import ListCabinSkeleton from "../_components/ListCabinSkeleton";
 import FilterCabins from "../_components/FilterCabins";
 import FilterCabinsByPrice from "../_components/MultiRangeSlider";
 
-// export const revalidate = 3600; // 1 tieng
-
 export const metadata: Metadata = {
   title: "Cabins",
   description: "Cabins by The Wild Oasis",
@@ -34,10 +32,10 @@ export default function page({
   };
   return (
     <div>
-      <h1 className="text-4xl mb-5 text-accent-400 font-medium">
+      <h1 className="md:text-4xl text-2xl mb-5 text-accent-400 font-medium">
         Our Luxury Cabins
       </h1>
-      <p className="text-primary-200 text-lg mb-10">
+      <p className="text-primary-200 md:text-lg text-sm mb-10">
         Cozy yet luxurious cabins, located right in the heart of the Italian
         Dolomites. Imagine waking up to beautiful mountain views, spending your
         days exploring the dark forests around, or just relaxing in your private
@@ -46,7 +44,7 @@ export default function page({
         Welcome to paradise.
       </p>
 
-      <div className="flex mb-8 items-center justify-between gap-4">
+      <div className="flex md:flex-row flex-col md:mb-8 mb-16 items-center justify-between md:gap-4 gap-8">
         <FilterCabins data={capacity} />
         <FilterCabinsByPrice min={0} max={2000} />
       </div>

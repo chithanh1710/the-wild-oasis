@@ -79,7 +79,6 @@ const MultiRangeSlider = ({ min, max }: { min: number; max: number }) => {
     }
   }, [minVal, getPercent]);
 
-  // Set width of the range to decrease from the right side
   useEffect(() => {
     const minPercent = getPercent(minValRef.current);
     const maxPercent = getPercent(maxVal);
