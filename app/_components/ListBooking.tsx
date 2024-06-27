@@ -12,11 +12,12 @@ export function ListBooking({ bookings }: { bookings: any }) {
 
   async function deleteBooking(id: string) {
     deleteBookingsOptimistic(id);
-    try {
-      await deleteReservationAction(id);
-    } catch (error) {
-      toast.error("Delete fail");
-    }
+
+    toast.promise(deleteReservationAction(id), {
+      error: "Delete fail",
+      loading: "Loading...",
+      success: "Delete success",
+    });
   }
 
   return (

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth, signIn, signOut } from "./auth";
 import { supabase } from "./supabase";
 import { createBooking, getBookings } from "./data-service";
-import { differenceInBusinessDays } from "date-fns";
+import { addDays, differenceInBusinessDays, isPast, subDays } from "date-fns";
 import { cabinProps } from "../_interfaces/Cabin";
 import { redirect } from "next/navigation";
 
@@ -46,17 +46,19 @@ export async function createReservationAction(
   const session = await auth();
   if (!session?.user || !session.user.guestId)
     throw new Error("You need logged");
+  if (isPast(newData.form))
+    throw new Error("You cannot select a start date after today");
   const maxNights = differenceInBusinessDays(newData.to, newData.form);
   const newBooking = {
     numGuests: Number(formData.get("numGuests")),
     observations: formData.get("observations")?.toString(),
     startDate: newData.form,
-    endDate: newData.to,
+    endDate: addDays(newData.to, 1),
     maxNights,
     cabinPrice: newData.cabin.regularPrice,
     totalPrice:
       (newData.cabin.regularPrice - newData.cabin.discount) * maxNights,
-    status: "pending",
+    status: "unconfirmed",
     hasBreakfast: false,
     isPaid: false,
     cabinID: newData.cabin.id,
@@ -65,10 +67,11 @@ export async function createReservationAction(
 
   try {
     await createBooking(newBooking);
+    redirect("/cabins/thankyou");
   } catch (error) {
     throw error;
   } finally {
     revalidatePath("/account/reservations");
-    redirect("/account/reservations");
+    revalidatePath(`/cabins/${newData.cabin.id}`);
   }
 }

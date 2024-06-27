@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createReservationAction } from "../_libs/actions";
 import toast from "react-hot-toast";
+import { ButtonReserveNow } from "./ButtonReserveNow";
 
 function ReservationForm({
   cabin,
@@ -100,11 +101,13 @@ function ReservationForm({
         </div>
 
         <div className="flex justify-end items-center gap-6">
-          <p className="text-primary-300 text-base">Start by selecting dates</p>
-
-          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-            Reserve now
-          </button>
+          {range.from && range.to ? (
+            <ButtonReserveNow />
+          ) : (
+            <p className="text-primary-300 text-base">
+              Start by selecting dates
+            </p>
+          )}
         </div>
       </form>
     </div>
