@@ -16,20 +16,20 @@ export default async function page() {
   return (
     <div className="flex flex-col gap-10">
       <h2 className="font-semibold text-2xl text-accent-400">
-        Welcome, {session?.user.name}
+        Welcome, {session?.user.name || ""}
       </h2>
       <h2 className="font-semibold text-xl">Email: {session?.user.email}</h2>
       <h2 className="font-semibold text-xl">
-        National ID number: {guest.nationalID}
+        National ID number: {guest.nationalID || ""}
       </h2>
       <h2 className="flex gap-4  items-center font-semibold text-xl">
-        Nationality: {guest.nationality}
+        Nationality: {guest.nationality || ""}
         <span>
           <Image
             width={24}
             height={24}
-            src={guest.countryFlag}
-            alt={guest.nationality}
+            src={guest.countryFlag || ""}
+            alt={guest.nationality || ""}
           />
         </span>
       </h2>
